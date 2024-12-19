@@ -5,33 +5,30 @@
 
 using namespace std;
 
-// Funkcija, skirta atspausdinti studentų duomenis
+// Atspausdinam studentų duomenis
 void spausdinti(const list<Studentas>& studentai, bool choice) {
     string pasirinkimas_pav;
 
-    // Nustatomas stulpelio pavadinimas priklausomai nuo pasirinkimo: vidurkis arba mediana
     if (choice == 0) {
-        pasirinkimas_pav = "(Vid.)";  // Pasirinkta naudoti vidurkį
+        pasirinkimas_pav = "(Vid.)";
     } else {
-        pasirinkimas_pav = "(Med.)";  // Pasirinkta naudoti medianą
+        pasirinkimas_pav = "(Med.)";
     }
 
-    stringstream buffer;  // Naudojamas stringstream, kad būtų galima surinkti visus duomenis prieš spausdinimą
+    stringstream buffer;  // naudojam stringstream
 
-    // Generuojamas lentelės antraštės formatas
     buffer << "\n-----------------------------------------------------------------------------------------------------------------------------------------\n";
-    buffer << left << setw(10) << "Pavardė" // Pirmosios stulpelio antraštė
-           << setw(10) << "" << "Vardas"   // Antrosios stulpelio antraštė
-           << setw(10) << "" << "Galutinis " << pasirinkimas_pav << endl; // Galutinio pažymio stulpelio antraštė
+    buffer << left << setw(10) << "Pavardė"
+           << setw(10) << "" << "Vardas"
+           << setw(10) << "" << "Galutinis "
+           << pasirinkimas_pav << endl;
     buffer << "-----------------------------------------------------------------------------------------------------------------------------------------\n";
 
-    // Ciklas per kiekvieną studentų sąrašo elementą
     for (const auto& studentas : studentai) {
-        buffer << left << setw(10) << studentas.getPavarde()  // Atspausdinama pavardė
-               << setw(10) << "" << studentas.getVardas()    // Atspausdinamas vardas
-               << setw(15) << "" << fixed << setprecision(2) << studentas.getGalutinis() << endl;  // Atspausdinamas galutinis pažymys su dviem dešimtainėmis tikslumu
+        buffer << left << setw(10) << studentas.getPavarde()
+               << setw(10) << "" << studentas.getVardas()
+               << setw(15) << "" << fixed << setprecision(2) << studentas.getGalutinis()<< endl;
     }
 
-    // Išvedami visi surinkti duomenys į ekraną vienu kartu
-    cout << buffer.str() << flush;
+    cout << buffer.str() << flush;  // viską atspausdinam vienu metu
 }

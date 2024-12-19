@@ -6,25 +6,22 @@
 #include <algorithm> // for std::copy
 #include <limits>
 
-// Konstruktorius be parametrų
 Studentas::Studentas() : Zmogus(), egz(0), galutinis(0.0) {}
 
-// Konstruktorius su parametrais
 Studentas::Studentas(const string& v, const string& p, const vector<int>& n, int e)
     : Zmogus(v, p), nd(n), egz(e) {
-    calculateGalutinis(); // Apskaičiuoja galutinį balą
+    calculateGalutinis();
 }
 
-// Kopijavimo konstruktorius
 Studentas::Studentas(const Studentas& other)
     : Zmogus(other.vardas, other.pavarde), nd(other.nd), egz(other.egz), galutinis(other.galutinis) {}
 
-// Kopijavimo priskyrimo operatorius (užtikrina gilų kopijavimą)
+// Copy assignment operator (deep copy)
 Studentas& Studentas::operator=(const Studentas& other) {
-    if (this != &other) { // Apsauga nuo priskyrimo sau pačiam
+    if (this != &other) { // Avoid self-assignment
         vardas = other.vardas;
         pavarde = other.pavarde;
-        nd = other.nd; // Kopijuojamas vektorius
+        nd = other.nd; // Vektorius
         egz = other.egz;
         galutinis = other.galutinis;
     }
@@ -33,78 +30,78 @@ Studentas& Studentas::operator=(const Studentas& other) {
 
 // Destruktorius
 Studentas::~Studentas() {
-    nd.clear(); // Atlaisvina atmintį, kurią užima namų darbų pažymiai
+    nd.clear();
 }
 
 // Įvesties operatorius
 istream& operator>>(istream& in, Studentas& s) {
     string input;
 
-    // Įveda vardą
+    // Input for first name
     cout << "Irasykite studento varda (ne daugiau nei 10 simboliu) arba paspauskite ENTER, kad baigtumete: ";
     getline(in, input);
-    if (input.empty()) return in; // Jei vartotojas paspaudžia ENTER, sustabdomas įvedimas
-    if (!arTeisinga(input)) { // Tikrinama, ar vardas teisingas
+    if (input.empty()) return in; // If user presses ENTER, stop input
+    if (!arTeisinga(input)) {
         cout << "Netinkamas vardas. Bandykite dar karta.\n";
         return in;
     }
     s.setVardas(input);
 
-    // Įveda pavardę
+    // Input for last name
     cout << "Irasykite studento pavarde (ne daugiau nei 10 simboliu): ";
     getline(in, input);
-    if (input.empty()) return in; // Jei vartotojas paspaudžia ENTER, sustabdomas įvedimas
-    if (!arTeisinga(input)) { // Tikrinama, ar pavardė teisinga
+    if (input.empty()) return in; // If user presses ENTER, stop input
+    if (!arTeisinga(input)) {
         cout << "Netinkama pavarde. Bandykite dar karta.\n";
         return in;
     }
     s.setPavarde(input);
 
-    // Pasirinkimas generuoti atsitiktinius pažymius ar įvesti ranka
+    // Ask if random grades should be generated
     int choice;
     cout << "Ar norite atsitiktinai sugeneruoti namu darbu ir egzamino pazymius?\n";
     cout << "0 - Ne, ivesiu ranka\n";
     cout << "1 - Taip, sugeneruok atsitiktinai\n";     
     while (true) {
         cout << "Iveskite pasirinkima (1 arba 0): ";
-        if (!(in >> choice) || (choice != 0 && choice != 1)) { // Netinkamas pasirinkimas
+        if (!(in >> choice) || (choice != 0 && choice != 1)) {
             cout << "Neteisingas pasirinkimas. Bandykite dar karta.\n";
-            in.clear(); // Išvaloma klaida
-            in.ignore(numeric_limits<streamsize>::max(), '\n'); // Išvalomas neteisingas įvestis
+            in.clear(); // Clear error state
+            in.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear invalid input
         } else {
-            in.ignore(numeric_limits<streamsize>::max(), '\n'); // Išvalomas naujos eilutės simbolis
+            in.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear newline after input
             break;
         }
     }
     
     if (choice == 1) {
-        // Sugeneruojami atsitiktiniai pažymiai
+        // Generate random grades for homework and exam
         int nd_kiekis;
         cout << "Kiek norite sugeneruoti namu darbu pazymiu? (Ne daugiau nei 10 000): ";
-        while (!(in >> nd_kiekis) || nd_kiekis < 0 || nd_kiekis > 10000) { // Patikrinamas skaičius
+        while (!(in >> nd_kiekis) || nd_kiekis < 0 || nd_kiekis > 10000) {
             cout << "Iveskite teisinga skaiciu: ";
             in.clear();
-            in.ignore(numeric_limits<streamsize>::max(), '\n'); // Išvalomas neteisingas įvestis
+            in.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear invalid input
         }
 
-        generuotiRandom(s, nd_kiekis);  // Sugeneruojami pažymiai
+        generuotiRandom(s, nd_kiekis);  // Generate random grades for the student
 
-        in.ignore(numeric_limits<streamsize>::max(), '\n'); // Išvalomas buferis
+        in.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear the buffer
     } else {
-        // Rankinis namų darbų pažymių įvedimas
+        // Manually enter homework grades
         cout << "Irasykite namu darbu pazymius (nuo 0 iki 10). Noredami baigti ivesti pazymius, paspauskite ENTER:\n";
         int pazymys;
         while (true) {
             cout << "Irasykite pazymi: ";
             getline(in, input);
-            if (input.empty()) break; // Sustojama, jei įvesta tuščia eilutė
+            if (input.empty()) break;
 
             try {
                 pazymys = stoi(input);
-                if (pazymys < 0 || pazymys > 10) { // Pažymys turi būti tarp 0 ir 10
+                if (pazymys < 0 || pazymys > 10) {
                     throw out_of_range("Pazymys turi buti tarp 0 ir 10.");
                 }
-                s.addNd(pazymys);  // Pridedamas pažymys
+                s.addNd(pazymys);  // Add grade using the setter method
             } catch (invalid_argument&) {
                 cout << "Iveskite teisinga pazymi (skaiciu nuo 0 iki 10).\n";
             } catch (out_of_range& e) {
@@ -112,13 +109,12 @@ istream& operator>>(istream& in, Studentas& s) {
             }
         }
         
-        // Egzamino pažymio įvedimas
         cout << "Irasykite egzamino pazymi: ";
         while (true) {
             getline(in, input);
             try {
                 pazymys = stoi(input);
-                if (pazymys < 0 || pazymys > 10) { // Egzamino pažymys turi būti tarp 0 ir 10
+                if (pazymys < 0 || pazymys > 10) {
                     throw out_of_range("Egzamino pazymys turi buti tarp 0 ir 10.");
                 }
                 s.setEgz(pazymys);
@@ -134,6 +130,7 @@ istream& operator>>(istream& in, Studentas& s) {
     return in;
 }
 
+
 // Išvesties operatorius
 ostream& operator<<(ostream& out, const Studentas& s) {
     out << setw(15) << left << s.vardas
@@ -142,55 +139,49 @@ ostream& operator<<(ostream& out, const Studentas& s) {
     return out;
 }
 
-// Gauk namų darbų pažymius
+
 vector<int> Studentas::getNd() const {
     return nd;
 }
 
-// Nustato namų darbų pažymius ir perskaičiuoja galutinį balą
 void Studentas::setNd(const vector<int>& n) {
     nd = n;
     calculateGalutinis();
 }
 
-// Gauk egzamino pažymį
+
 int Studentas::getEgz() const {
     return egz;
 }
 
-// Nustato egzamino pažymį ir perskaičiuoja galutinį balą
 void Studentas::setEgz(int e) {
     egz = e;
     calculateGalutinis();
 }
 
-// Gauk galutinį balą (modifikuojama versija)
+
 double& Studentas::getGalutinis() {
     return galutinis;
 }
 
-// Gauk galutinį balą (tik skaitymui)
 const double& Studentas::getGalutinis() const {
     return galutinis;
 }
 
-// Skaičiuoja galutinį pažymį (privati funkcija)
+// Privatus metodas galutinio pažymio skaičiavimui
 void Studentas::calculateGalutinis() {
-    if (!nd.empty()) { // Jei yra namų darbų pažymių
+    if (!nd.empty()) {
         double nd_avg = accumulate(nd.begin(), nd.end(), 0.0) / nd.size();
         galutinis = 0.4 * nd_avg + 0.6 * egz;
-    } else { // Jei nėra namų darbų pažymių
+    } else {
         galutinis = 0.6 * egz;
     }
 }
 
-// Prideda namų darbų pažymį ir perskaičiuoja galutinį balą
 void Studentas::addNd(int grade) {
     nd.push_back(grade);
     calculateGalutinis();
 }
-
-// Pateikia studento informaciją kaip eilutę
 string Studentas::toString() const {
     stringstream ss;
     ss << "Vardas: " << vardas << ", Pavarde: " << pavarde << ", Galutinis: " << fixed << setprecision(2) << galutinis;
