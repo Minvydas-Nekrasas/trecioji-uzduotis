@@ -7,6 +7,7 @@ include_directories(.)
 
 add_executable(vertinimas
     studentas.h
+    studentas.cpp
     main.cpp
     duomenys.cpp
     duomenys.h
@@ -17,4 +18,6 @@ add_executable(vertinimas
     vertinimas.cpp
     vertinimas.h
     ivedimas.cpp
-    ivedimas.h)
+    ivedimas.h
+    zmogus.h
+    zmogus.cpp)

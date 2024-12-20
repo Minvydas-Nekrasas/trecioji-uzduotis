@@ -1,0 +1,12 @@
+﻿  duomenys.cpp
+  ivedimas.cpp
+  main.cpp
+C:\Users\minvy\OneDrive\Desktop\trecioji-uzduotis\ivedimas.cpp(15,9): warning C4101: 'pazymys': unreferenced local variable
+  rezultatas.cpp
+  rikiavimas.cpp
+  studentas.cpp
+  vertinimas.cpp
+C:\Users\minvy\OneDrive\Desktop\trecioji-uzduotis\vertinimas.cpp(29,15): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  zmogus.cpp
+  Generating Code...
+  vertinimas.vcxproj -> C:\Users\minvy\OneDrive\Desktop\trecioji-uzduotis\vertinimas\x64\Debug\vertinimas.exe
